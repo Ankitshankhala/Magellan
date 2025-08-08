@@ -1,0 +1,361 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Delivery Tracking - MAGELLAN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #1A3745;
+            color: #E0E6ED;
+            font-size: 1.2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1A3745, #2A4A57);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #E0E6ED;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #B0B6BD;
+        }
+
+        .tracking-info {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .status-card {
+            background: #1A3745;
+            border: 2px solid #2A4A57;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online {
+            background-color: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        .status-offline {
+            background-color: #F44336;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .map-container {
+            background: #1A3745;
+            border: 2px solid #2A4A57;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .map-container h3 {
+            margin-bottom: 1rem;
+            color: #E0E6ED;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: #1A3745;
+            border: 2px solid #2A4A57;
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .info-card h4 {
+            color: #3498db;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .info-card p {
+            margin-bottom: 0.5rem;
+            color: #E0E6ED;
+        }
+
+        .error-message {
+            background: #E74C3C;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .tracking-info {
+                padding: 0 0.5rem;
+            }
+
+            .status-card, .map-container, .info-card {
+                padding: 1.5rem;
+            }
+
+            #map {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚛 Live Delivery Tracking</h1>
+        <p>Real-time location updates for your delivery</p>
+    </div>
+
+    <div class="tracking-info">
+        <div class="status-card">
+            <h3><span id="statusIndicator" class="status-indicator status-offline"></span>Tracking Status</h3>
+            <p id="statusText">Connecting to driver...</p>
+            <p id="lastUpdate">Last update: Never</p>
+        </div>
+
+        <div class="map-container">
+            <h3>📍 Driver Location</h3>
+            <div id="map"></div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h4>📊 Location Details</h4>
+                <p><strong>Latitude:</strong> <span id="latitude">-</span></p>
+                <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
+                <p><strong>Accuracy:</strong> <span id="accuracy">-</span></p>
+                <p><strong>Speed:</strong> <span id="speed">-</span></p>
+            </div>
+
+            <div class="info-card">
+                <h4>⏱️ Tracking Info</h4>
+                <p><strong>Tracking ID:</strong> <span id="trackingIdDisplay">-</span></p>
+                <p><strong>Started:</strong> <span id="trackingStarted">-</span></p>
+                <p><strong>Updates:</strong> <span id="updateCount">0</span></p>
+                <p><strong>Next refresh:</strong> <span id="nextRefresh">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let driverMarker;
+        let trackingId;
+        let updateCount = 0;
+        let refreshInterval;
+        let nextRefreshTimeout;
+
+        // Get tracking ID from URL
+        function getTrackingId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([51.505, -0.09], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Update driver position on map
+        function updateDriverPosition(lat, lng, accuracy) {
+            if (!map) return;
+
+            if (driverMarker) {
+                map.removeLayer(driverMarker);
+            }
+
+            // Create custom truck icon
+            const truckIcon = L.divIcon({
+                html: '<div style="background: #3498db; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"></div>',
+                iconSize: [20, 20],
+                className: 'truck-marker'
+            });
+
+            driverMarker = L.marker([lat, lng], { icon: truckIcon }).addTo(map);
+            
+            // Add accuracy circle
+            L.circle([lat, lng], {
+                radius: accuracy,
+                color: '#3498db',
+                fillColor: '#3498db',
+                fillOpacity: 0.1,
+                weight: 2
+            }).addTo(map);
+
+            // Center map on driver location
+            map.setView([lat, lng], 15);
+
+            driverMarker.bindPopup(`
+                <div style="color: #333;">
+                    <strong>🚛 Driver Location</strong><br>
+                    <strong>Lat:</strong> ${lat.toFixed(6)}<br>
+                    <strong>Lng:</strong> ${lng.toFixed(6)}<br>
+                    <strong>Accuracy:</strong> ±${accuracy.toFixed(0)}m
+                </div>
+            `).openPopup();
+        }
+
+        // Update location info in cards
+        function updateLocationInfo(position) {
+            document.getElementById('latitude').textContent = position.coords.latitude.toFixed(6);
+            document.getElementById('longitude').textContent = position.coords.longitude.toFixed(6);
+            document.getElementById('accuracy').textContent = `±${position.coords.accuracy.toFixed(0)}m`;
+            document.getElementById('speed').textContent = position.coords.speed ? `${(position.coords.speed * 3.6).toFixed(1)} km/h` : 'Unknown';
+            
+            updateCount++;
+            document.getElementById('updateCount').textContent = updateCount;
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+
+        // Check for location updates
+        function checkLocationUpdate() {
+            if (!trackingId) return;
+
+            const trackedLocation = localStorage.getItem(`tracking_${trackingId}`);
+            
+            if (trackedLocation) {
+                try {
+                    const locationData = JSON.parse(trackedLocation);
+                    const lastUpdate = new Date(locationData.timestamp);
+                    const now = new Date();
+                    const timeDiff = (now - lastUpdate) / 1000; // seconds
+
+                    if (timeDiff < 60) { // Location is fresh (less than 1 minute old)
+                        updateDriverPosition(locationData.latitude, locationData.longitude, locationData.accuracy);
+                        updateLocationInfo(locationData.position);
+                        
+                        document.getElementById('statusIndicator').className = 'status-indicator status-online';
+                        document.getElementById('statusText').textContent = 'Driver is online and sharing location';
+                    } else {
+                        document.getElementById('statusIndicator').className = 'status-indicator status-offline';
+                        document.getElementById('statusText').textContent = 'Driver location outdated';
+                    }
+                } catch (error) {
+                    console.error('Error parsing location data:', error);
+                }
+            } else {
+                document.getElementById('statusIndicator').className = 'status-indicator status-offline';
+                document.getElementById('statusText').textContent = 'No location data available';
+            }
+        }
+
+        // Start countdown for next refresh
+        function startRefreshCountdown() {
+            let seconds = 10;
+            
+            const countdown = setInterval(() => {
+                document.getElementById('nextRefresh').textContent = `${seconds}s`;
+                seconds--;
+                
+                if (seconds < 0) {
+                    clearInterval(countdown);
+                    document.getElementById('nextRefresh').textContent = 'Refreshing...';
+                }
+            }, 1000);
+        }
+
+        // Initialize tracking page
+        function initTracking() {
+            trackingId = getTrackingId();
+            
+            if (!trackingId) {
+                document.querySelector('.tracking-info').innerHTML = `
+                    <div class="error-message">
+                        <h3>❌ Invalid Tracking Link</h3>
+                        <p>This tracking link is invalid or expired. Please request a new tracking link from the driver.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            document.getElementById('trackingIdDisplay').textContent = trackingId;
+            
+            initMap();
+            checkLocationUpdate();
+            
+            // Set up refresh interval
+            refreshInterval = setInterval(() => {
+                checkLocationUpdate();
+                startRefreshCountdown();
+            }, 10000);
+            
+            startRefreshCountdown();
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            if (nextRefreshTimeout) {
+                clearTimeout(nextRefreshTimeout);
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initTracking);
+    </script>
+</body>
+</html>
