@@ -1,0 +1,532 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAGELLAN - Professional HGV Driver Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, rgba(26, 55, 69, 0.95), rgba(42, 74, 87, 0.95)), url('attached_assets/Home-Welcome-1 (1)_1751131221438.jpg') center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 2rem;
+            z-index: 2;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 3.5rem;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 1rem 2rem;
+            border: 2px solid white;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #1A3745;
+        }
+
+        .features-section {
+            padding: 5rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #1A3745;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1A3745;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .screenshots-section {
+            padding: 5rem 2rem;
+            background: #1A3745;
+            color: white;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .screenshot-item {
+            text-align: center;
+        }
+
+        .screenshot-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .screenshot-image:hover {
+            transform: scale(1.05);
+        }
+
+        .screenshot-title {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .benefits-section {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-item {
+            padding: 1.5rem;
+            border-left: 4px solid #27ae60;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .benefit-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1A3745;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #1A3745, #2A4A57);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .footer {
+            background: #0F2A35;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .logo-text {
+                font-size: 2.5rem;
+            }
+
+            .logo-image {
+                width: 60px;
+                height: 60px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .screenshots-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="logo-section">
+                <img src="attached_assets/ChatGPT Image May 23 2025 03_22_53 PM (1)_1751131065067.png" alt="MAGELLAN Logo" class="logo-image">
+                <h1 class="logo-text">MAGELLAN</h1>
+            </div>
+            <h2 class="hero-title">Professional HGV Driver Tools</h2>
+            <p class="hero-subtitle">Complete digital toolkit for professional drivers - streamline your operations, ensure compliance, and drive with confidence</p>
+            <div class="cta-buttons">
+                <a href="index.html" class="btn-primary">🚛 Start Driving Smart</a>
+                <a href="#features" class="btn-secondary">📱 Explore Features</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <svg width="24" height="24" fill="white" opacity="0.7">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" transform="rotate(90 12 12)"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2 class="section-title">Everything You Need on the Road</h2>
+            <p class="section-subtitle">Comprehensive tools designed specifically for professional HGV drivers</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3 class="feature-title">Digital Walkaround Checklist</h3>
+                    <p class="feature-description">Complete pre-trip inspections with our comprehensive digital checklist. Ensure safety compliance and generate professional PDF reports instantly.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3 class="feature-title">Electronic Proof of Delivery</h3>
+                    <p class="feature-description">Streamline your delivery process with digital signatures, photo capture, and instant PDF generation. Professional E-POD made simple.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3 class="feature-title">Smart Delivery Notes</h3>
+                    <p class="feature-description">Create professional delivery documentation with GPS tracking, recipient signatures, and automated compliance reporting.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛰️</div>
+                    <h3 class="feature-title">Live GPS Tracking</h3>
+                    <p class="feature-description">Share your real-time location with customers and dispatch. Secure tracking links with automatic time limits for privacy protection.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Universal Converters</h3>
+                    <p class="feature-description">Currency, weight, distance, fuel consumption, and specialized HGV calculators. Everything you need for international operations.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">AI Driving Assistant</h3>
+                    <p class="feature-description">Get instant answers about HGV regulations, route planning, safety procedures, and compliance requirements from our AI copilot.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3 class="feature-title">Digital Document Wallet</h3>
+                    <p class="feature-description">Securely store and organize all your driving documents. Smart categorization and instant access to licenses, certificates, and permits.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Compliance & Reporting</h3>
+                    <p class="feature-description">Automated incident reporting, driver hours calculation, and comprehensive compliance tracking to keep you legal and safe.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section class="screenshots-section">
+        <div class="container">
+            <h2 class="section-title">See It in Action</h2>
+            <p class="section-subtitle">Professional tools designed for the modern driver</p>
+            
+            <div class="screenshots-grid">
+                <div class="screenshot-item">
+                    <img src="attached_assets/Screenshot (38)_1753453436745.png" alt="Walkaround Checklist" class="screenshot-image">
+                    <h4 class="screenshot-title">Digital Walkaround Checklist</h4>
+                </div>
+                <div class="screenshot-item">
+                    <img src="attached_assets/Screenshot (40)_1753460505291.png" alt="E-POD System" class="screenshot-image">
+                    <h4 class="screenshot-title">E-POD with Digital Signatures</h4>
+                </div>
+                <div class="screenshot-item">
+                    <img src="attached_assets/Screenshot (41)_1753462435520.png" alt="GPS Tracking" class="screenshot-image">
+                    <h4 class="screenshot-title">Live GPS Tracking</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title">Why Choose MAGELLAN?</h2>
+            <p class="section-subtitle">Built by drivers, for drivers - with professional standards in mind</p>
+            
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <h3 class="benefit-title">🌍 Multi-Language Support</h3>
+                    <p>Available in English, Polish, Romanian, Russian, and Lithuanian - perfect for international operations.</p>
+                </div>
+                <div class="benefit-item">
+                    <h3 class="benefit-title">📱 Mobile-First Design</h3>
+                    <p>Optimized for smartphones and tablets with offline capabilities for use anywhere on the road.</p>
+                </div>
+                <div class="benefit-item">
+                    <h3 class="benefit-title">🔒 Privacy & Security</h3>
+                    <p>Your data stays secure with local storage options and controlled sharing for GPS tracking.</p>
+                </div>
+                <div class="benefit-item">
+                    <h3 class="benefit-title">⚡ Instant PDF Generation</h3>
+                    <p>Generate professional reports and documentation instantly - no internet required for basic functions.</p>
+                </div>
+                <div class="benefit-item">
+                    <h3 class="benefit-title">🎯 Compliance Ready</h3>
+                    <p>Stay compliant with EU and UK regulations using built-in validation and automated checks.</p>
+                </div>
+                <div class="benefit-item">
+                    <h3 class="benefit-title">💰 Cost Effective</h3>
+                    <p>Replace multiple apps and paper forms with one comprehensive solution that saves time and money.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Drive Smarter?</h2>
+            <p class="cta-description">Join thousands of professional drivers who have streamlined their operations with MAGELLAN</p>
+            <a href="index.html" class="btn-primary">🚛 Get Started Now - It's Free!</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.html" class="footer-link">App Home</a>
+                <a href="#features" class="footer-link">Features</a>
+                <a href="mailto:support@magellan-hgv.com" class="footer-link">Support</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
+            </div>
+            <p>&copy; 2025 MAGELLAN. Professional HGV Driver Solutions. Built with ❤️ on Replit.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add scroll effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-section');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+    </script>
+</body>
+</html>

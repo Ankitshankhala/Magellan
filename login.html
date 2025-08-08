@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MAGELLAN - Driver Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: url('attached_assets/Home-Welcome-1 (1)_1751131221438.jpg') center/cover;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 55, 69, 0.3);
+      z-index: 1;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 400px;
+      padding: 0 1rem;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #1A3745, #2A4A57);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+    }
+
+    .login-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    .login-header p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .login-body {
+      padding: 2rem;
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 2rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #6c757d;
+      transition: all 0.3s ease;
+    }
+
+    .auth-tab.active {
+      background: #1A3745;
+      color: white;
+      box-shadow: 0 2px 8px rgba(26, 55, 69, 0.3);
+    }
+
+    .social-login {
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: white;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #495057;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+
+    .social-btn:hover {
+      border-color: #1A3745;
+      background: #f8f9fa;
+    }
+
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 1.5rem 0;
+      position: relative;
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #dee2e6;
+      z-index: 1;
+    }
+
+    .divider span {
+      background: white;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #495057;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #495057;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #1A3745;
+      box-shadow: 0 0 0 3px rgba(26, 55, 69, 0.1);
+    }
+
+    .form-control::placeholder {
+      color: #adb5bd;
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .form-check input {
+      margin-right: 8px;
+      transform: scale(1.1);
+    }
+
+    .form-check label {
+      font-size: 0.85rem;
+      color: #6c757d;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg, #1A3745, #2A4A57);
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2A4A57, #3A5A67);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(26, 55, 69, 0.3);
+    }
+
+    .forgot-password {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+      color: #1A3745;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-password:hover {
+      color: #2A4A57;
+      text-decoration: underline;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #dee2e6;
+      color: #6c757d;
+      font-size: 0.85rem;
+    }
+
+    .register-link a {
+      color: #1A3745;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    .password-input-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-input-container input {
+      padding-right: 45px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6c757d;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      transition: color 0.3s ease;
+    }
+
+    .password-toggle:hover {
+      color: #1A3745;
+    }
+
+    .password-toggle svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .auth-form {
+      display: none;
+    }
+
+    .auth-form.active {
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        max-width: 350px;
+      }
+
+      .login-header,
+      .login-body {
+        padding: 1.5rem;
+      }
+
+      .login-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <img src="attached_assets/ChatGPT Image May 23 2025 03_22_53 PM (1)_1751131065067.png" alt="MAGELLAN Logo" class="logo">
+        <h1>MAGELLAN</h1>
+        <p>Advanced Mobility and Freight Solutions</p>
+      </div>
+
+      <div class="login-body">
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchTab('login')">LOGIN</button>
+          <button class="auth-tab" onclick="switchTab('register')">REGISTER</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="auth-form active">
+          <div class="social-login">
+            <button class="social-btn" onclick="handleGoogleAuth()">
+              <svg viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              Sign in with Google
+            </button>
+          </div>
+
+          <div class="divider">
+            <span>or</span>
+          </div>
+
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="email" class="form-label">Email or username</label>
+              <input type="email" class="form-control" id="email" placeholder="driver@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <div class="password-input-container">
+                <input type="password" class="form-control" id="password" placeholder="Password" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                  <svg id="password-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" id="remember" checked>
+              <label for="remember">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn-primary" id="loginBtn">SIGN IN</button>
+
+            <a href="#" class="forgot-password" onclick="switchTab('forgot')">Forgot password?</a>
+          </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="auth-form">
+          <div class="social-login">
+            <button class="social-btn" onclick="handleGoogleAuth()">
+              <svg viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+              Sign up with Google
+            </button>
+          </div>
+
+          <div class="divider">
+            <span>or</span>
+          </div>
+
+          <form onsubmit="handleRegister(event)">
+            <div class="form-group">
+              <label for="reg-name" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="reg-name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="reg-email" placeholder="driver@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-password" class="form-label">Password</label>
+              <div class="password-input-container">
+                <input type="password" class="form-control" id="reg-password" placeholder="Password" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('reg-password')">
+                  <svg id="reg-password-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-confirm" class="form-label">Confirm Password</label>
+              <div class="password-input-container">
+                <input type="password" class="form-control" id="reg-confirm" placeholder="Confirm Password" required>
+                <button type="button" class="password-toggle" onclick="togglePassword('reg-confirm')">
+                  <svg id="reg-confirm-eye" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="registerBtn">REGISTER</button>
+          </form>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgot-form" class="auth-form">
+          <form onsubmit="handleForgotPassword(event)">
+            <div class="form-group">
+              <label for="forgot-email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="forgot-email" placeholder="Enter your email" required>
+            </div>
+
+            <button type="submit" class="btn-primary" id="forgotBtn">SEND RESET LINK</button>
+
+            <a href="#" class="forgot-password" onclick="switchTab('login')">Back to Login</a>
+          </form>
+        </div>
+
+        <div class="register-link">
+          Not a member? <a href="#" onclick="switchTab('register')">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      // Hide all forms
+      document.querySelectorAll('.auth-form').forEach(form => {
+        form.classList.remove('active');
+      });
+      
+      // Hide all tab buttons
+      document.querySelectorAll('.auth-tab').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      // Show selected form
+      if (tab === 'login') {
+        document.getElementById('login-form').classList.add('active');
+        document.querySelector('[onclick="switchTab(\'login\')"]').classList.add('active');
+      } else if (tab === 'register') {
+        document.getElementById('register-form').classList.add('active');
+        document.querySelector('[onclick="switchTab(\'register\')"]').classList.add('active');
+      } else if (tab === 'forgot') {
+        document.getElementById('forgot-form').classList.add('active');
+      }
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const loginBtn = document.getElementById('loginBtn');
+      
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+      
+      setTimeout(() => {
+        if (email && password) {
+          const stayLoggedIn = document.getElementById('remember').checked;
+          
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('authMethod', 'traditional');
+          localStorage.setItem('userEmail', email);
+          localStorage.setItem('authTimestamp', new Date().toISOString());
+          localStorage.setItem('stayLoggedIn', stayLoggedIn.toString());
+          
+          loginBtn.textContent = 'Success! Redirecting...';
+          loginBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+          
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        } else {
+          loginBtn.textContent = 'Login Failed';
+          loginBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+          
+          setTimeout(() => {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'SIGN IN';
+            loginBtn.style.background = 'linear-gradient(135deg, #1A3745, #2A4A57)';
+          }, 2000);
+        }
+      }, 1500);
+    }
+
+    function handleRegister(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+      const registerBtn = document.getElementById('registerBtn');
+      
+      if (password !== confirm) {
+        alert('Passwords do not match!');
+        return;
+      }
+      
+      registerBtn.disabled = true;
+      registerBtn.textContent = 'Creating Account...';
+      
+      setTimeout(() => {
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('authMethod', 'traditional');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', name);
+        localStorage.setItem('authTimestamp', new Date().toISOString());
+        localStorage.setItem('stayLoggedIn', 'true'); // Default to stay logged in for new registrations
+        
+        registerBtn.textContent = 'Success! Redirecting...';
+        registerBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+        
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+      }, 1500);
+    }
+
+    function handleForgotPassword(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('forgot-email').value;
+      const forgotBtn = document.getElementById('forgotBtn');
+      
+      forgotBtn.disabled = true;
+      forgotBtn.textContent = 'Sending...';
+      
+      setTimeout(() => {
+        forgotBtn.textContent = 'Reset link sent!';
+        forgotBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+        
+        setTimeout(() => {
+          switchTab('login');
+          forgotBtn.disabled = false;
+          forgotBtn.textContent = 'SEND RESET LINK';
+          forgotBtn.style.background = 'linear-gradient(135deg, #1A3745, #2A4A57)';
+        }, 2000);
+      }, 1500);
+    }
+
+    function handleGoogleAuth() {
+      // Simulate Google authentication
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('authMethod', 'google');
+      localStorage.setItem('userEmail', 'driver@google.com');
+      localStorage.setItem('authTimestamp', new Date().toISOString());
+      localStorage.setItem('stayLoggedIn', 'true'); // Default to stay logged in for Google auth
+      
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    }
+
+    // Check if user is already authenticated
+    function checkExistingAuth() {
+      const isAuthenticated = localStorage.getItem('isAuthenticated');
+      if (isAuthenticated === 'true') {
+        const stayLoggedIn = localStorage.getItem('stayLoggedIn') === 'true';
+        
+        if (stayLoggedIn) {
+          // User chose to stay logged in - redirect immediately
+          window.location.href = 'index.html';
+        } else {
+          // Check 24-hour expiry for non-persistent sessions
+          const authTimestamp = localStorage.getItem('authTimestamp');
+          const now = new Date();
+          const authTime = new Date(authTimestamp);
+          const hoursSinceAuth = (now - authTime) / (1000 * 60 * 60);
+          
+          if (hoursSinceAuth < 24) {
+            window.location.href = 'index.html';
+          } else {
+            localStorage.removeItem('isAuthenticated');
+            localStorage.removeItem('authMethod');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('authTimestamp');
+            localStorage.removeItem('stayLoggedIn');
+          }
+        }
+      }
+    }
+
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const eyeIcon = document.getElementById(inputId + '-eye');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        // Change to "eye-off" icon
+        eyeIcon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        `;
+      } else {
+        input.type = 'password';
+        // Change back to "eye" icon
+        eyeIcon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        `;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      checkExistingAuth();
+    });
+
+    // Make functions globally accessible
+    window.switchTab = switchTab;
+    window.handleLogin = handleLogin;
+    window.handleRegister = handleRegister;
+    window.handleForgotPassword = handleForgotPassword;
+    window.handleGoogleAuth = handleGoogleAuth;
+    window.togglePassword = togglePassword;
+  </script>
+
+</body>
+</html>

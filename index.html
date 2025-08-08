@@ -1,0 +1,2551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HGV Driver Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+    <div class="header-container">
+        <div class="header-content">
+            <div class="title-section">
+            </div>
+        </div>
+
+
+
+        <div class="weather-widget-mini" onclick="showSection('weather-details')">
+            <div class="weather-icon-mini">☁️</div>
+            <div class="weather-info-mini">
+                <div class="weather-temp-mini">--°</div>
+                <div class="weather-location-mini">LOADING...</div>
+            </div>
+        </div>
+
+        <div class="ai-assistant-icon" onclick="showSection('ai-assistant')">
+            <img src="attached_assets/ChatGPT Image Jul 15, 2025, 01_30_13 PM_1752582623676.png" alt="AI Copilot" class="ai-copilot-image">
+            <span data-translate="ai-copilot">AI Copilot</span>
+        </div>
+
+        <div class="top-logo">
+            <img src="attached_assets/ChatGPT Image May 23 2025 03_22_53 PM (1)_1751131065067.png" alt="MAGELLAN Logo" class="top-logo-image">
+            <h1 class="top-logo-text">MAGELLAN</h1>
+        </div>
+
+
+
+
+
+        <nav>
+            <button class="nav-btn" onclick="showSection('converters')" data-translate="nav-converters">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7 17H5V15h2v2zm0-4H5V11h2v2zm0-4H5V7h2v2zm4 8H9v-2h2v2zm0-4H9v-2h2v2zm0-4H9V7h2v2zm0-4H9V5h2v2zm4 12h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm0-4h-2V5h2v2zm4 8h-2V9h2v8z"/>
+                </svg>
+                Converters
+            </button>
+            <button class="nav-btn" onclick="showSection('checklist')" data-translate="nav-checklist">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M9 16.17L5.53 12.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l4.18 4.18c.39.39 1.02.39 1.41 0L20.29 7.71c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0L9 16.17z"/>
+                </svg>
+                Walkaround Checklist
+            </button>
+            <button class="nav-btn" onclick="showSection('epod')" data-translate="nav-epod">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                </svg>
+                E-POD
+            </button>
+            <button class="nav-btn" onclick="showSection('delivery')" data-translate="nav-delivery">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M18,18.5A1.5,1.5 0 0,1 16.5,17A1.5,1.5 0 0,1 18,15.5A1.5,1.5 0 0,1 19.5,17A1.5,1.5 0 0,1 18,18.5M19.5,9.5L21.46,12H17V9.5M6,18.5A1.5,1.5 0 0,1 4.5,17A1.5,1.5 0 0,1 6,15.5A1.5,1.5 0 0,1 7.5,17A1.5,1.5 0 0,1 6,18.5M20,8H17V4H3C1.89,4 1,4.89 1,6V17H3A3,3 0 0,0 6,20A3,3 0 0,0 9,17H15A3,3 0 0,0 18,20A3,3 0 0,0 21,17H23V12L20,8Z"/>
+                </svg>
+                Delivery Note
+            </button>
+            <button class="nav-btn" onclick="showSection('gps-tracking')" data-translate="nav-gps">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.6,4 13.2,4.07 13.79,4.21L15.39,2.61C14.31,2.21 13.16,2 12,2M21,4V9H16L21,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12H16A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8V6Z"/>
+                </svg>
+                GPS Tracking
+            </button>
+            <button class="nav-btn" onclick="showSection('document-wallet')" data-translate="nav-document-wallet">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z"/>
+                </svg>
+                Document Wallet
+            </button>
+            <button class="nav-btn" onclick="showSection('moretools')" data-translate="nav-moretools">
+                <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                </svg>
+                Get More Tools
+            </button>
+        </nav>
+    </div>
+
+    <main>
+
+        <!-- Walkaround Checklist Section -->
+        <section id="checklist" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="checklist-title">HGV Driver Walk-Around Checklist</h2>
+            </div>
+            <form id="walkaroundCheckForm">
+                <!-- Vehicle Info Section -->
+                <div class="form-group">
+                    <label for="vehicleReg" data-translate="vehicle-reg">Vehicle Registration No:</label>
+                    <input type="text" id="vehicleReg" name="vehicleReg" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="odo" data-translate="odo">ODO:</label>
+                    <input type="text" id="odo" name="odo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="trailerno" data-translate="trailer-no">Trailer No:</label>
+                    <input type="text" id="trailerno" name="trailerno" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="driverName" data-translate="driver-name">Driver's Name:</label>
+                    <input type="text" id="driverName" name="driverName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="checkDate" data-translate="date">Date:</label>
+                    <input type="date" id="checkDate" name="checkDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="checkTime" data-translate="time">Time:</label>
+                    <input type="time" id="checkTime" name="checkTime" required>
+                </div>
+
+                <!-- Daily Check Section -->
+                <h3 class="section-header" data-translate="daily-check">Daily Check</h3>
+
+                <div class="checklist-table-container">
+                    <!-- Section 1: Document & Cabin Checks -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">✅ 1. Document & Cabin Checks (Start Inside Cab)</h4>
+                        <table class="checklist-table">
+                            <thead>
+                                <tr>
+                                    <th data-translate="checklist-item">Checklist Item</th>
+                                    <th data-translate="status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>CVRT, tax & insurance discs</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tachograph & speed limiter</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Driver's seat & seat belts</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Instruments, gauges & warning devices</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Other driving controls</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>ABS/EBS warning lights</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Smoke emission</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section1Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section1Images" name="section1Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(1)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(1)" style="display: none;" id="stopCamera1">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview1" style="display: none;">
+                                <video id="cameraVideo1" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(1)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section1Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Engine Bay & Fluid Levels -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">🔄 2. Engine Bay & Fluid Levels</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Engine oil, water, windscreen washer reservoir, fuel level</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Fuel/Oil leaks</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Wiring & battery</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section2Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section2Images" name="section2Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(2)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(2)" style="display: none;" id="stopCamera2">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview2" style="display: none;">
+                                <video id="cameraVideo2" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(2)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section2Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Mirrors, Windows & Visibility -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">👁️ 3. Mirrors, Windows & Visibility</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Mirrors</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Windows</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Windscreen wipers & washers</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Horn</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section3Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section3Images" name="section3Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(3)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(3)" style="display: none;" id="stopCamera3">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview3" style="display: none;">
+                                <video id="cameraVideo3" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(3)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section3Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Lights, Indicators & Reflectors -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">💡 4. Lights, Indicators & Reflectors</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Lights, indicators & reflectors</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Markers</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Number plates & marker plates</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section4Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section4Images" name="section4Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(4)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(4)" style="display: none;" id="stopCamera4">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview4" style="display: none;">
+                                <video id="cameraVideo4" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(4)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section4Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Vehicle Body & Underside -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">🚍 5. Vehicle Body & Underside</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Bumpers, sideguards & under run protection</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Spray suppression/wings</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Cab, body & fittings</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Exhaust</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Air leaks & pressure drop</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Air suspension setting</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section5Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section5Images" name="section5Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(5)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(5)" style="display: none;" id="stopCamera5">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview5" style="display: none;">
+                                <video id="cameraVideo5" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(5)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section5Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Wheels & Tyres -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">🛞 6. Wheels & Tyres</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Tyres condition & inflation</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Wheels & fixings</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section6Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section6Images" name="section6Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(6)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(6)" style="display: none;" id="stopCamera6">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview6" style="display: none;">
+                                <video id="cameraVideo6" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(6)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section6Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Brakes System -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">🛑 7. Brakes System</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Brake controls</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Brakes operation</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trailer parking brake</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section7Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section7Images" name="section7Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(7)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(7)" style="display: none;" id="stopCamera7">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview7" style="display: none;">
+                                <video id="cameraVideo7" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(7)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section7Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 8: Steering -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">🧭 8. Steering</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Steering controls</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Steering operation</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section8Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section8Images" name="section8Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(8)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(8)" style="display: none;" id="stopCamera8">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview8" style="display: none;">
+                                <video id="cameraVideo8" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(8)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section8Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 9: Trailer Connections & Couplings -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">🔗 9. Trailer Connections & Couplings</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Trailer coupling</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Fifth wheel couplings security</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trailer brake connections</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trailer electrical connections</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Landing legs & mechanism</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section9Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section9Images" name="section9Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(9)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(9)" style="display: none;" id="stopCamera9">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview9" style="display: none;">
+                                <video id="cameraVideo9" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(9)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section9Preview"></div>
+                        </div>
+                    </div>
+
+                    <!-- Section 10: Load & Safety -->
+                    <div class="checklist-section">
+                        <h4 class="checklist-section-title">📦 10. Load & Safety</h4>
+                        <table class="checklist-table">
+                            <tbody>
+                                <tr>
+                                    <td>Load security & weight distribution</td>
+                                    <td>
+                                        <div class="status-buttons">
+                                            <button type="button" class="status-button" data-status="V">V</button>
+                                            <button type="button" class="status-button" data-status="X">X</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="section-image-upload">
+                            <label for="section10Images">📷 Upload Images for this Section:</label>
+                            <input type="file" id="section10Images" name="section10Images" accept="image/*" multiple capture="environment">
+                            <div class="camera-controls">
+                                <button type="button" class="camera-btn" onclick="startCamera(10)">
+                                    📱 Take Photo
+                                </button>
+                                <button type="button" class="camera-btn" onclick="stopCamera(10)" style="display: none;" id="stopCamera10">
+                                    ⏹️ Stop Camera
+                                </button>
+                            </div>
+                            <div class="camera-preview" id="cameraPreview10" style="display: none;">
+                                <video id="cameraVideo10" autoplay playsinline></video>
+                                <br>
+                                <button type="button" class="capture-btn" onclick="capturePhoto(10)">📸 Capture Photo</button>
+                            </div>
+                            <div class="image-preview-container" id="section10Preview"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Defects Section -->
+                <h3 class="section-header" data-translate="defects">Defects</h3>
+                <div class="form-group">
+                    <label for="defects" data-translate="report-defects">Report defects here:</label>
+                    <textarea id="defects" name="defects" rows="4"></textarea>
+                </div>
+
+
+
+                <!-- Driver's Signature Section -->
+                <div class="form-group">
+                    <label for="driverSignature" data-translate="driver-signature">Driver's Signature:</label>
+                    <canvas id="signatureCanvas" width="400" height="150"></canvas>
+                    <div class="signature-controls">
+                        <button type="button" onclick="clearSignature()" data-translate="clear-signature">Clear Signature</button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" data-translate="generate-pdf">Generate PDF Report</button>
+                    <button type="button" onclick="saveChecklist()" data-translate="save-checklist">Save Checklist</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- E-POD Section -->
+        <section id="epod" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="epod-title">Electronic Proof of Delivery</h2>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="epod-progress-bar">
+                <div class="epod-step epod-step-active" id="epod-step1" onclick="navigateToEPODStep(1)" style="cursor: pointer;">1. <span data-translate="upload">Upload / take photo</span></div>
+                <div class="epod-step epod-step-inactive" id="epod-step2" onclick="navigateToEPODStep(2)" style="cursor: pointer;">2. <span data-translate="sign">Sign</span></div>
+                <div class="epod-step epod-step-inactive" id="epod-step3" onclick="navigateToEPODStep(3)" style="cursor: pointer;">3. <span data-translate="details">Details</span></div>
+                <div class="epod-step epod-step-inactive" id="epod-step4" onclick="navigateToEPODStep(4)" style="cursor: pointer;">4. <span data-translate="save-btn">Save</span></div>
+            </div>
+
+            <!-- Step 1: Upload PDF -->
+            <div id="epod-upload-section" class="epod-step-section">
+                <h3 class="section-header" data-translate="upload-pdf">Upload Delivery Note (PDF)</h3>
+                <div class="form-group">
+                    <label for="epod-pdf-upload">📄 Select PDF or Image File:</label>
+                    <input type="file" id="epod-pdf-upload" accept=".pdf,.jpg,.jpeg,.png,.bmp,.gif" class="epod-file-input">
+                    <small style="color: #B0B6BD; display: block; margin-top: 0.5rem;">
+                        Upload the delivery note (PDF) or photo that needs to be signed
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="epod-camera-upload">📷 Or Take Photo with Camera:</label>
+                    <input type="file" id="epod-camera-upload" accept="image/*" capture="environment" class="epod-file-input">
+                    <small style="color: #B0B6BD; display: block; margin-top: 0.5rem;">
+                        Use your device camera to capture the delivery note directly
+                    </small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="loadEPODPDF()" class="submit-btn" data-translate="load-pdf">Load Document</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Sign -->
+            <div id="epod-sign-section" class="epod-step-section" style="display: none;">
+                <h3 class="section-header">Add Your Signature</h3>
+                <div class="signature-container">
+                    <label for="epod-signature-pad">Received by:</label>
+                    <canvas id="epod-signature-pad" width="400" height="150" class="signature-canvas"></canvas>
+                    <div class="signature-controls">
+                        <button type="button" onclick="toggleEPODFullScreen()">Full Screen</button>
+                        <button type="button" onclick="clearEPODSignature()">Clear Signature</button>
+                        <button type="button" onclick="applyEPODSignature()">Apply Signature</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Delivery Details -->
+            <div id="epod-details-section" class="epod-step-section" style="display: none;">
+                <h3 class="section-header">Enter Delivery Details</h3>
+                <div class="form-group">
+                    <label for="epod-recipient-name">Recipient Name:</label>
+                    <input type="text" id="epod-recipient-name" placeholder="Recipient Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="epod-delivery-date">Delivery Date:</label>
+                    <input type="date" id="epod-delivery-date">
+                </div>
+
+                <div class="form-group">
+                    <label for="epod-vehicle-id">Vehicle ID:</label>
+                    <input type="text" id="epod-vehicle-id" placeholder="Vehicle ID">
+                </div>
+
+                <div class="form-group">
+                    <label for="epod-notes">Additional Notes:</label>
+                    <textarea id="epod-notes" placeholder="Additional Notes" rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="applyEPODDetails()" class="submit-btn">Apply Details</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Save -->
+            <div id="epod-save-section" class="epod-step-section" style="display: none;">
+                <h3 class="section-header">Review and Save</h3>
+
+                <!-- Interactive Document Preview -->
+                <div class="epod-document-preview">
+                    <h4>Document Preview - Click to Place Details & Signature</h4>
+                    <div class="document-preview-container">
+                        <div class="document-canvas-container">
+                            <canvas id="epod-document-canvas" class="document-preview-canvas"></canvas>
+                            <div id="placement-indicators" class="placement-indicators"></div>
+                        </div>
+                        <div class="placement-instructions">
+                            <p><strong>Interactive Placement:</strong></p>
+                            <ul>
+                                <li>👆 Click anywhere on the document to place details & signature</li>
+                            </ul>
+                            <div class="placement-controls">
+                                <button type="button" onclick="resetPlacement()" class="placement-btn">Reset to Default Position</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details and Signature Preview -->
+                    <div class="epod-document-preview">
+                        <h4>Final Preview</h4>
+                        <div class="preview-container">
+                            <div class="preview-section">
+                                <h5>Delivery Details</h5>
+                                <div class="preview-details-content">
+                                    <p><strong>Recipient:</strong> <span id="preview-recipient">Not specified</span></p>
+                                    <p><strong>Date:</strong> <span id="preview-date">Not specified</span></p>
+                                    <p><strong>Vehicle ID:</strong> <span id="preview-vehicle">Not specified</span></p>
+                                    <p><strong>Notes:</strong> <span id="preview-notes">None</span></p>
+                                </div>
+                            </div>
+
+                            <div class="preview-section">
+                                <h5>Received by:</h5>
+                                <div class="signature-preview">
+                                    <canvas id="epod-signature-preview" width="200" height="75" style="border: 1px solid #2A4A57; background: white; border-radius: 5px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="clearAllEPOD()">Clear All</button>
+                    <button type="button" onclick="saveEPODPDF()">Save PDF</button>
+                    <button type="button" onclick="emailEPOD()">Email to Customer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Delivery Note Section -->
+        <section id="delivery" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="delivery-title">Delivery Note</h2>
+            </div>
+
+            <form id="deliveryForm">
+                <!-- Section 1: Driver & Vehicle Info -->
+                <div class="delivery-section">
+                    <h3 class="delivery-section-title">🚛 1. Driver & Vehicle Info</h3>
+                    <div class="delivery-section-content">
+                        <div class="form-group">
+                            <label for="delivery-driver-name">Driver Name:</label>
+                            <input type="text" id="delivery-driver-name" name="driverName" placeholder="Auto-filled from profile">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="delivery-vehicle-reg">Vehicle Registration Number:</label>
+                            <input type="text" id="delivery-vehicle-reg" name="vehicleReg" placeholder="Auto-filled from profile" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="delivery-date">Date:</label>
+                                <input type="date" id="delivery-date" name="deliveryDate" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="delivery-time">Time:</label>
+                                <input type="time" id="delivery-time" name="deliveryTime" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Client / Delivery Location -->
+                <div class="delivery-section">
+                    <h3 class="delivery-section-title">📍 2. Client / Delivery Location</h3>
+                    <div class="delivery-section-content">
+                        <div class="form-group">
+                            <label for="client-name">Client Name / Site Contact:</label>
+                            <input type="text" id="client-name" name="clientName" placeholder="Enter client or site contact name" required>
+                        </div>
+
+                        ```text
+
+                        <div class="form-group">
+                            <label for="delivery-address">Address / Location Description:</label>
+                            <textarea id="delivery-address" name="deliveryAddress" rows="3" placeholder="Enter full delivery address or location description" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Goods Description --><div class="delivery-section">
+                    <h3 class="delivery-section-title">📦 3. Goods Description</h3>
+                    <div class="delivery-section-content">                        <div class="form-group">
+                            <label for="goods-description">Goods Description:</label>
+                            <textarea id="goods-description" name="goodsDescription" rows="3" placeholder="e.g. 3 pallets of tiles, 50 bags of cement, 1 container mixed goods" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="goods-quantity">Quantity (Optional):</label>
+                                <input type="text" id="goods-quantity" name="goodsQuantity" placeholder="e.g. 3 pallets, 50 units">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="goods-type">Type (Optional):</label>
+                                <input type="text" id="goods-type" name="goodsType" placeholder="e.g. Construction materials, Electronics">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="load-condition">Load Condition (Optional):</label>
+                            <select id="load-condition" name="loadCondition">
+                                <option value="">Select condition</option>
+                                <option value="perfect">Perfect condition</option>
+                                <option value="good">Good condition</option>
+                                <option value="minor-damage">Minor damage noted</option>
+                                <option value="damaged">Damaged - see notes</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Recipient Confirmation -->
+                <div class="delivery-section">
+                    <h3 class="delivery-section-title">✍️ 4. Recipient Confirmation</h3>
+                    <div class="delivery-section-content">
+                        <div class="form-group">
+                            <label for="delivery-signature">Recipient's Signature:</label>
+                            <canvas id="deliverySignatureCanvas" width="400" height="150" class="signature-canvas"></canvas>
+                            <div class="signature-controls">
+                                <button type="button" onclick="clearDeliverySignature()">Clear Signature</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name">Recipient's Printed Name:</label>
+                            <input type="text" id="recipient-name" name="recipientName" placeholder="Enter recipient's full name" required>
+                        </div>
+
+                        <div class="delivery-confirmation">
+                            <label class="confirmation-label">Delivery Status:</label>
+                            <div class="confirmation-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="deliveryStatus" value="accepted" checked>
+                                    <span class="radio-custom accepted"></span>
+                                    Accepted
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="deliveryStatus" value="refused">
+                                    <span class="radio-custom refused"></span>
+                                    Refused
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="refusal-reason-group" style="display: none;">
+                            <label for="refusal-reason">Reason for Refusal:</label>
+                            <textarea id="refusal-reason" name="refusalReason" rows="2" placeholder="Please specify reason for refusing delivery"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Optional -->
+                <div class="delivery-section">
+                    <h3 class="delivery-section-title">📝 5. Optional Information</h3>
+                    <div class="delivery-section-content">
+                        <div class="form-group">
+                            <label for="delivery-notes">Notes / Special Instructions:</label>
+                            <textarea id="delivery-notes" name="deliveryNotes" rows="3" placeholder="Any additional notes, special instructions, or observations"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="delivery-photo">Photo Upload (Delivered Items):</label>
+                            <input type="file" id="delivery-photo" name="deliveryPhoto" accept="image/*" capture="environment">
+                            <div class="photo-preview" id="photo-preview" style="display: none;">
+                                <img id="preview-image" src="" alt="Delivery Photo Preview" style="max-width: 100%; max-height: 200px; border-radius: 5px;">
+                            </div>
+                        </div>
+
+                        <div class="gps-location" id="gps-location-display">
+                            <p><strong>📍 GPS Location:</strong> <span id="current-gps">Click "Get GPS Location" to capture current position</span></p>
+                            <button type="button" onclick="captureGPSLocation()" class="gps-btn">Get GPS Location</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="generateDeliveryPDF()" class="primary-btn">📄 Generate PDF</button>
+                    <button type="button" onclick="emailDeliveryNote()" class="secondary-btn">📧 Email Copy</button>
+                    <button type="button" onclick="saveDeliveryNote()" class="secondary-btn">💾 Save Draft</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Converters Section -->
+        <section id="converters" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn">← Back</button>
+                <h2>Unit Converters</h2>
+            </div>
+
+            <div class="converter-tabs">
+                <!-- Row 1: Currency, Drive/Work Hours, Driver Handbook -->
+                <button class="tab-btn active" onclick="showConverterTab('currency')">💱 Currency</button>
+                <button class="tab-btn" onclick="showConverterTab('hours')">🕒 Drive/Work Hours</button>
+                <button class="tab-btn" onclick="showConverterTab('calculator')">🧮 Calculator</button>
+
+                <!-- Row 2: Loading Space, Speed, Fuel -->
+                <button class="tab-btn" onclick="showConverterTab('load')">📦 Loading Space</button>
+                <button class="tab-btn" onclick="showConverterTab('speed')">💨 Speed</button>
+                <button class="tab-btn" onclick="showConverterTab('fuel')">⛽ Fuel</button>
+
+                <!-- Row 3: Pressure, Temp, Weight -->
+                <button class="tab-btn" onclick="showConverterTab('pressure')">🔧 Pressure</button>
+                <button class="tab-btn" onclick="showConverterTab('temperature')">🌡️ Temp</button>
+                <button class="tab-btn" onclick="showConverterTab('weight')">⚖️ Weight</button>
+
+                <!-- Row 4: Length, Volume, Area -->
+                <button class="tab-btn" onclick="showConverterTab('length')">📏 Length</button>
+                <button class="tab-btn" onclick="showConverterTab('volume')">🥤 Volume</button>
+                <button class="tab-btn" onclick="showConverterTab('area')">📐 Area</button>
+            </div>
+        </div>
+
+            <!-- Currency Converter -->
+            <div id="currency-converter" class="converter-tab-content active">
+                <div class="converter-card">
+                    <h3>💱 Currency Converter</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="currencyAmount" placeholder="Amount" step="0.01">
+                            <select id="fromCurrency">
+                                <option value="GBP">GBP (£)</option>
+                                <option value="EUR" selected>EUR (€)</option>
+                                <option value="USD">USD ($)</option>
+                                <option value="PLN">PLN (zł)</option>
+                                <option value="RON">RON (lei)</option>
+                                <option value="RUB">RUB (₽)</option>
+                            </select>
+                        </div>
+                        <button onclick="convertCurrency()" class="convert-btn">Convert Currency</button>
+                        <div id="currencyResult" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Length Converter -->
+            <div id="length-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>📏 Length & Distance</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="lengthInput" placeholder="Enter value" step="any">
+                            <select id="lengthFromUnit">
+                                <option value="mm">Millimeters</option>
+                                <option value="cm">Centimeters</option>
+                                <option value="in">Inches</option>
+                                <option value="ft">Feet</option>
+                                <option value="yd">Yards</option>
+                                <option value="m" selected>Meters</option>
+                                <option value="km">Kilometers</option>
+                                <option value="mi">Miles</option>
+                                <option value="nmi">Nautical Miles</option>
+                                <option value="ff">🏈 Football Fields (100m)</option>
+                                <option value="moon">🌙 Moon Round Trip (~768M km)</option>
+                                <option value="eo">🌍 Earth Orbit (~940M km)</option>
+                            </select>
+                        </div>
+                        <button onclick="convertLength()" class="convert-btn">Convert</button>
+                        <div id="lengthResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weight Converter -->
+            <div id="weight-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>⚖️ Weight & Mass</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="weightInput" placeholder="Enter value" step="any">
+                            <select id="weightFromUnit">
+                                <option value="mg">Milligrams</option>
+                                <option value="g">Grams</option>
+                                <option value="kg" selected>Kilograms</option>
+                                <option value="oz">Ounces</option>
+                                <option value="lb">Pounds</option>
+                                <option value="st">Stone</option>
+                                <option value="t">Tonnes</option>
+                            </select>
+                        </div>
+                        <button onclick="convertWeight()" class="convert-btn">Convert</button>
+                        <div id="weightResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Volume Converter -->
+            <div id="volume-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>🥤 Volume & Capacity</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="volumeInput" placeholder="Enter value" step="any">
+                            <select id="volumeFromUnit">
+                                <option value="ml">Milliliters</option>
+                                <option value="l" selected>Liters</option>
+                                <option value="gal_uk">Gallons (UK)</option>
+                                <option value="gal_us">Gallons (US)</option>
+                                <option value="pt_uk">Pints (UK)</option>
+                                <option value="pt_us">Pints (US)</option>
+                                <option value="fl_oz_uk">Fl Oz (UK)</option>
+                                <option value="fl_oz_us">Fl Oz (US)</option>
+                                <option value="ft3">Cubic Feet</option>
+                                <option value="m3">Cubic Meters</option>
+                            </select>
+                        </div>
+                        <button onclick="convertVolume()" class="convert-btn">Convert</button>
+                        <div id="volumeResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Temperature Converter -->
+            <div id="temperature-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>🌡️ Temperature</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="temperatureInput" placeholder="Enter value" step="any">
+                            <select id="temperatureFromUnit">
+                                <option value="c" selected>Celsius (°C)</option>
+                                <option value="f">Fahrenheit (°F)</option>
+                                <option value="k">Kelvin (K)</option>
+                                <option value="r">Rankine (°R)</option>
+                            </select>
+                        </div>
+                        <button onclick="convertTemperature()" class="convert-btn">Convert</button>
+                        <div id="temperatureResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speed Converter -->
+            <div id="speed-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>💨 Speed & Velocity</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="speedInput" placeholder="Enter value" step="any">
+                            <select id="speedFromUnit">
+                                <option value="mps">Meters/Second</option>
+                                <option value="kph" selected>Kilometers/Hour</option>
+                                <option value="mph">Miles/Hour</option>
+                                <option value="kts">Knots</option>
+                                <option value="fpm">Feet/Minute</option>
+                                <option value="mach">Mach Number</option>
+                                <option value="cosmic1">🚀 1st Cosmic Speed</option>
+                                <option value="cosmic2">🌍 2nd Cosmic Speed</option>
+                                <option value="cosmic3">☀️ 3rd Cosmic Speed</option>
+                                <option value="lightspeed">💫 Light Speed %</option>
+                            </select>
+                        </div>
+                        <button onclick="convertSpeed()" class="convert-btn">Convert</button>
+                        <div id="speedResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pressure Converter -->
+            <div id="pressure-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>🔧 Pressure</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="pressureInput" placeholder="Enter value" step="any">
+                            <select id="pressureFromUnit">
+                                <option value="pa">Pascal</option>
+                                <option value="hpa">Hectopascal</option>
+                                <option value="kpa">Kilopascal</option>
+                                <option value="bar" selected>Bar</option>
+                                <option value="psi">PSI</option>
+                                <option value="atm">Atmosphere</option>
+                                <option value="mmhg">mmHg</option>
+                                <option value="inhg">inHg</option>
+                            </select>
+                        </div>
+                        <button onclick="convertPressure()" class="convert-btn">Convert</button>
+                        <div id="pressureResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area Converter -->
+            <div id="area-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>📐 Area</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="areaInput" placeholder="Enter value" step="any">
+                            <select id="areaFromUnit">
+                                <option value="mm2">Square mm</option>
+                                <option value="cm2">Square cm</option>
+                                <option value="m2" selected>Square meters</option>
+                                <option value="km2">Square km</option>
+                                <option value="in2">Square inches</option>
+                                <option value="ft2">Square feet</option>
+                                <option value="yd2">Square yards</option>
+                                <option value="ac">Acres</option>
+                                <option value="ha">Hectares</option>
+                                <option value="mi2">Square miles</option>
+                            </select>
+                        </div>
+                        <button onclick="convertArea()" class="convert-btn">Convert</button>
+                        <div id="areaResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Converter -->
+            <div id="fuel-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>⛽ Fuel Consumption</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="fuelInput" placeholder="Enter value" step="any">
+                            <select id="fuelFromUnit">
+                                <option value="mpg_uk" selected>MPG (UK)</option>
+                                <option value="mpg_us">MPG (US)</option>
+                                <option value="l100km">Lit/100km</option>
+                                <option value="kmpl">Km/Lit</option>
+                                <option value="gal100mi_uk">Gal/100mi (UK)</option>
+                                <option value="gal100mi_us">Gal/100mi (US)</option>
+                            </select>
+                        </div>
+                        <button onclick="convertFuel()" class="convert-btn">Convert</button>
+                        <div id="fuelResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Working Hours Converter -->
+            <div id="hours-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>🕒 Weekly Driver / Work Hours Calculator</h3>
+
+                    <!-- Daily Calculator -->
+                    <h4 style="color: #3498db; margin-bottom: 1rem;">📊 Daily Calculator</h4>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="time" id="hoursStartTime" placeholder="Current time auto-filled">
+                            <select id="hoursCalcType">
+                                <option value="driving" selected>Driving Time Limits</option>
+                                <option value="working">Working Time Limits</option>
+                                <option value="rest">Daily Rest Period</option>
+                            </select>
+                        </div>
+                        <button onclick="convertHours()" class="convert-btn">Calculate</button>
+                        <div id="hoursResults" class="conversion-results"></div>
+                    </div>
+
+                    <!-- Weekly Compliance Tracker -->
+                    <div class="compliance-tracker" style="margin-top: 2rem;">
+                        <h4 style="color: #3498db; margin-bottom: 1rem;">📋 Weekly Compliance Tracker</h4>
+                        <p style="color: #B0B6BD; margin-bottom: 1rem;">Track daily driving and working hour violations for the week</p>
+
+                        <div class="weeks-container">
+                            <div class="week-section">
+                                <div class="days-grid">
+                                    <div class="day-item">
+                                        <div class="day-header">Monday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_mon_drive" name="w1_mon_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_mon_work" name="w1_mon_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="day-item">
+                                        <div class="day-header">Tuesday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_tue_drive" name="w1_tue_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_tue_work" name="w1_tue_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="day-item">
+                                        <div class="day-header">Wednesday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_wed_drive" name="w1_wed_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_wed_work" name="w1_wed_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="day-item">
+                                        <div class="day-header">Thursday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_thu_drive" name="w1_thu_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_thu_work" name="w1_thu_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="day-item">
+                                        <div class="day-header">Friday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_fri_drive" name="w1_fri_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_fri_work" name="w1_fri_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="day-item">
+                                        <div class="day-header">Saturday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_sat_drive" name="w1_sat_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_sat_work" name="w1_sat_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="day-item">
+                                        <div class="day-header">Sunday</div>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_sun_drive" name="w1_sun_drive">
+                                            <span>Drove more than 9 hrs</span>
+                                        </label>
+                                        <label class="compliance-checkbox">
+                                            <input type="checkbox" id="w1_sun_work" name="w1_sun_work">
+                                            <span>Worked more than 13 hrs</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tracker-actions">
+                            <button onclick="analyzeCompliance()" class="convert-btn">Check My Hours</button>
+                        </div>
+
+                        <div id="complianceResults" class="conversion-results"></div>
+
+                        <!-- EU Regulations Reference -->
+                        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(52, 152, 219, 0.1); border-radius: 10px; border-left: 4px solid #3498db;">
+                            <h5 style="color: #3498db; margin-bottom: 1rem; text-align: center;">📋 EU Regulations Reference</h5>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; font-size: 0.9rem; color: #E0E6ED;">
+                                <div>
+                                    <strong style="color: #e74c3c;">Daily Driving:</strong><br>
+                                    Max 9 hours, extendable to 10 hours on 2 days per week
+                                </div>
+                                <div>
+                                    <strong style="color: #e74c3c;">Breaks:</strong><br>
+                                    45 min after 4.5h driving (split allowed: 15 min + 30 min, in that order)
+                                </div>
+                                <div>
+                                    <strong style="color: #e74c3c;">Weekly Driving:</strong><br>
+                                    Max 90 hours over any 2 consecutive weeks
+                                </div>
+                                <div>
+                                    <strong style="color: #e74c3c;">Working Time:</strong><br>
+                                    Max 60h/week, but average must be ≤ 48h over reference period
+                                </div>
+                                <div>
+                                    <strong style="color: #e74c3c;">Weekly Rest:</strong><br>
+                                    At least 45 hours, may reduce to 24h (max 2× between full rests, with compensation)
+                                </div>
+                            </div>
+                            <p style="text-align: center; margin-top: 1rem; font-style: italic; color: #B0B6BD;">
+                                <strong>Always confirm details with official EU rules & take proper rest.</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load Planning Converter -->
+            <div id="load-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>📦 Loading Space Calculator</h3>
+                    <div class="converter-input-group">
+                        <div class="input-with-unit">
+                            <input type="number" id="loadInput" placeholder="Number of pallets" step="1" min="1">
+                            <select id="loadPalletType">
+                                <option value="euro" selected>Euro Pallet (1200x800mm)</option>
+                                <option value="uk">UK Pallet (1200x1000mm)</option>
+                                <option value="industrial">Industrial Pallet (1200x1000mm)</option>
+                                <option value="dusseldorf">Düsseldorf Pallet (800x600mm)</option>
+                            </select>
+                        </div>
+                        <div class="input-with-unit">
+                            <input type="number" id="loadWeight" placeholder="Total weight (kg)" step="100">
+                            <select id="loadAxles">
+                                <option value="2">2 Axles</option>
+                                <option value="3" selected>3 Axles</option>
+                                <option value="4">4 Axles</option>
+                                <option value="5">5 Axles</option>
+                                <option value="6">6 Axles</option>
+                            </select>
+                        </div>
+                        <button onclick="convertLoad()" class="convert-btn">Calculate</button>
+                        <div id="loadResults" class="conversion-results"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator -->
+            <div id="calculator-converter" class="converter-tab-content">
+                <div class="converter-card">
+                    <h3>🧮 Calculator</h3>
+                    <div class="calculator-container">
+                        <div class="calculator-display">
+                            <input type="text" id="calculatorDisplay" readonly value="0">
+                        </div>
+                        <div class="calculator-buttons">
+                            <button onclick="clearCalculator()" class="calc-btn clear">C</button>
+                            <button onclick="appendToDisplay('(')" class="calc-btn operator">(</button>
+                            <button onclick="appendToDisplay(')')" class="calc-btn operator">)</button>
+                            <button onclick="appendToDisplay('/')" class="calc-btn operator">÷</button>
+
+                            <button onclick="appendToDisplay('7')" class="calc-btn number">7</button>
+                            <button onclick="appendToDisplay('8')" class="calc-btn number">8</button>
+                            <button onclick="appendToDisplay('9')" class="calc-btn number">9</button>
+                            <button onclick="appendToDisplay('*')" class="calc-btn operator">×</button>
+
+                            <button onclick="appendToDisplay('4')" class="calc-btn number">4</button>
+                            <button onclick="appendToDisplay('5')" class="calc-btn number">5</button>
+                            <button onclick="appendToDisplay('6')" class="calc-btn number">6</button>
+                            <button onclick="appendToDisplay('-')" class="calc-btn operator">-</button>
+
+                            <button onclick="appendToDisplay('1')" class="calc-btn number">1</button>
+                            <button onclick="appendToDisplay('2')" class="calc-btn number">2</button>
+                            <button onclick="appendToDisplay('3')" class="calc-btn number">3</button>
+                            <button onclick="appendToDisplay('+')" class="calc-btn operator">+</button>
+
+                            <button onclick="appendToDisplay('0')" class="calc-btn number zero">0</button>
+                            <button onclick="appendToDisplay('.')" class="calc-btn number">.</button>
+                            <button onclick="calculate()" class="calc-btn equals">=</button>
+                        </div>
+                        <div class="calculator-memory">
+                            <button onclick="memoryClear()" class="calc-btn memory">MC</button>
+                            <button onclick="memoryRecall()" class="calc-btn memory">MR</button>
+                            <button onclick="memorySet()" class="calc-btn memory">MS</button>
+                            <button onclick="memoryAdd()" class="calc-btn memory">M+</button>
+                            <button onclick="memorySubtract()" class="calc-btn memory">M-</button>
+                        </div>
+                        <div class="result-display"></div>
+                    </div>
+                </div>
+            </div>
+
+            </section>
+
+        <!-- Profile Settings Section -->
+        <section id="profile" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn">← Back</button>
+                <h2>Profile Settings            </div>
+
+            <div class="profile-content">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="#E0E6ED">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </div>
+                    <h3>Driver Profile</h3>
+                </div>
+
+                <form id="profileForm" class="profile-form">
+                    <div class="form-group">
+                        <label for="driverName">Driver Name:</label>
+                        <input type="text" id="driverName" name="driverName" placeholder="Enter your name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="driverLicense">License Number:</label>
+                        <input type="text" id="driverLicense" name="driverLicense" placeholder="Enter license number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companyName">Company Name:</label>
+                        <input type="text" id="companyName" name="companyName" placeholder="Enter company name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vehicleReg">Vehicle Registration:</label>
+                        <input type="text" id="vehicleReg" name="vehicleReg" placeholder="Enter vehicle registration">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" placeholder="Enter email address">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" onclick="saveProfile()">Save Profile</button>
+                        <button type="button" onclick="exportData()">Export Data</button>
+                        <button type="button" onclick="clearAllData()">Clear All Data</button>
+                        <button type="button" onclick="logout()" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">Logout</button>
+                    </div>
+                </form>
+
+                <div class="app-settings">
+                    <h3>App Settings</h3>
+                    <div class="setting-item">
+                        <label for="autoSave">Auto-save forms:</label>
+                        <input type="checkbox" id="autoSave" name="autoSave" checked>
+                    </div>
+                    <div class="setting-item">
+                        <label for="notifications">Enable notifications:</label>
+                        <input type="checkbox" id="notifications" name="notifications">
+                    </div>
+                    <div class="setting-item">
+                        <label for="darkMode">Dark mode:</label>
+                        <input type="checkbox" id="darkMode" name="darkMode" checked>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Archive Section -->
+        <section id="archive" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn">← Back</button>
+                <h2>Archive</h2>
+            </div>
+
+            <div class="tools-grid">
+                <div class="tool-card" onclick="showSection('archive-walkaround')">
+                    <h3>🚛 Walkaround Reports</h3>
+                    <p>View saved walkaround checklists and inspection reports</p>
+                </div>
+
+                <div class="tool-card" onclick="showSection('archive-epod')">
+                    <h3>📦 E-POD Archive</h3>
+                    <p>Browse electronic proof of delivery records</p>
+                </div>
+
+                <div class="tool-card" onclick="showSection('archive-delivery')">
+                    <h3>📄 Delivery Notes</h3>
+                    <p>Access saved delivery note documents</p>
+                </div>
+
+                <div class="tool-card" onclick="showSection('archive-additional1')">
+                    <h3>📊 Reports</h3>
+                    <p>View generated reports and analytics</p>
+                </div>
+
+                <div class="tool-card" onclick="showSection('archive-additional2')">
+                    <h3>📁 Documents</h3>
+                    <p>Access other saved documents and files</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Weather Details Section -->
+        <section id="weather-details" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="weather-title">Weather Details</h2>
+            </div>
+
+            <div class="weather-details-content">
+                <!-- 7-Day Forecast -->
+                <div class="forecast-container">
+                    <h3>📅 7-Day Forecast</h3>
+                    <div class="forecast-grid">
+                        <div class="forecast-item">
+                            <div class="forecast-day">Today</div>
+                            <div class="forecast-icon">🌤️</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">24°</span>
+                                <span class="forecast-low">15°</span>
+                            </div>
+                            <div class="forecast-desc">Partly Cloudy</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ SW 19 kph (Gusts: 25 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 10% (0.1mm)</div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="forecast-day">Tomorrow</div>
+                            <div class="forecast-icon">🌧️</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">19°</span>
+                                <span class="forecast-low">12°</span>
+                            </div>
+                            <div class="forecast-desc">Light Rain</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ W 22 kph (Gusts: 35 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 60% (5.2mm)</div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="forecast-day">Thursday</div>
+                            <div class="forecast-icon">⛅</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">21°</span>
+                                <span class="forecast-low">14°</span>
+                            </div>
+                            <div class="forecast-desc">Partly Cloudy</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ NW 12 kph (Gusts: 18 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 20% (0.8mm)</div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="forecast-day">Friday</div>
+                            <div class="forecast-icon">☀️</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">26°</span>
+                                <span class="forecast-low">16°</span>
+                            </div>
+                            <div class="forecast-desc">Sunny</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ E 8 kph (Gusts: 12 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 0% (0mm)</div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="forecast-day">Saturday</div>
+                            <div class="forecast-icon">☀️</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">28°</span>
+                                <span class="forecast-low">18°</span>
+                            </div>
+                            <div class="forecast-desc">Sunny</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ SE 10 kph (Gusts: 15 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 5% (0.1mm)</div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="forecast-day">Sunday</div>
+                            <div class="forecast-icon">🌤️</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">25°</span>
+                                <span class="forecast-low">17°</span>
+                            </div>
+                            <div class="forecast-desc">Partly Cloudy</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ S 15 kph (Gusts: 22 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 15% (0.3mm)</div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="forecast-day">Monday</div>
+                            <div class="forecast-icon">🌦️</div>
+                            <div class="forecast-temps">
+                                <span class="forecast-high">23°</span>
+                                <span class="forecast-low">15°</span>
+                            </div>
+                            <div class="forecast-desc">Showers</div>
+                            <div class="forecast-details">
+                                <div class="forecast-wind">🌬️ SW 18 kph (Gusts: 30 kph)</div>
+                                <div class="forecast-rain">💧 Rain: 70% (8.5mm)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Driving Conditions -->
+                <div class="driving-conditions">
+                    <h3>🚛 Driving Conditions</h3>
+                    <div class="conditions-grid">
+                        <div class="condition-item condition-good">
+                            <div class="condition-icon">✅</div>
+                            <div class="condition-text">
+                                <div class="condition-title">Road Conditions</div>
+                                <div class="condition-desc">Good - Dry roads</div>
+                            </div>
+                        </div>
+
+                        <div class="condition-item condition-moderate">
+                            <div class="condition-icon">⚠️</div>
+                            <div class="condition-text">
+                                <div class="condition-title">Wind Advisory</div>
+                                <div class="condition-desc">Moderate - Strong crosswinds</div>
+                            </div>
+                        </div>
+
+                        <div class="condition-item condition-good">
+                            <div class="condition-icon">👁️</div>
+                            <div class="condition-text">
+                                <div class="condition-title">Visibility</div>
+                                <div class="condition-desc">Excellent - Clear skies</div>
+                            </div>
+                        </div>
+
+                        <div class="condition-item condition-good">
+                            <div class="condition-icon">🌡️</div>
+                            <div class="condition-text">
+                                <div class="condition-title">Temperature</div>
+                                <div class="condition-desc">Optimal - No ice risk</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Weather Warnings -->
+                <div class="weather-warnings-container">
+                    <h3>⚠️ Weather Warnings</h3>
+                    <div class="weather-warnings" id="weatherWarnings">
+                        <!-- Example warnings - will be populated dynamically later -->
+                        <div class="warning-item warning-moderate">
+                            <div class="warning-icon">🌬️</div>
+                            <div class="warning-content">
+                                <div class="warning-title">Strong Wind Advisory</div>
+                                <div class="warning-desc">Winds 30-40 kph expected. Exercise caution when driving high-sided vehicles.</div>
+                                <div class="warning-time">Valid until: Today 18:00</div>
+                            </div>
+                        </div>
+
+                        <div class="warning-item warning-low">
+                            <div class="warning-icon">🌧️</div>
+                            <div class="warning-content">
+                                <div class="warning-title">Light Rain Expected</div>
+                                <div class="warning-desc">Intermittent light rain expected this evening. Road surfaces may become slippery.</div>
+                                <div class="warning-time">Valid: Today 16:00 - 22:00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No warnings state -->
+                    <div class="no-warnings" id="noWarnings" style="display: none;">
+                        <div class="no-warnings-icon">✅</div>
+                        <div class="no-warnings-text">
+                            <h4>No Active Weather Warnings</h4>
+                            <p>Current weather conditions are favorable for driving.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Archive Subpages -->
+        <section id="archive-walkaround" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('archive')" class="back-btn">← Back to Archive</button>
+                <h2>Walkaround Reports</h2>
+            </div>
+            <div id="walkaroundArchive" class="archive-content">
+                <p>Loading saved walkaround checklists...</p>
+            </div>
+        </section>
+
+        <section id="archive-epod" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('archive')" class="back-btn">← Back to Archive</button>
+                <h2>E-POD Archive</h2>
+            </div>
+            <div id="epodArchive" class="archive-content">
+                <p>Loading saved E-POD records...</p>
+            </div>
+        </section>
+
+        <section id="archive-delivery" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('archive')" class="back-btn">← Back to Archive</button>
+                <h2>Delivery Notes</h2>
+            </div>
+            <div id="deliveryArchive" class="archive-content">
+                <p>Loading saved delivery notes...</p>
+            </div>
+        </section>
+
+        <section id="archive-additional1" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('archive')" class="back-btn">← Back to Archive</button>
+                <h2>Reports</h2>
+            </div>
+            <div id="reportsArchive" class="archive-content">
+                <p>No reports available yet.</p>
+            </div>
+        </section>
+
+        <section id="archive-additional2" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('archive')" class="back-btn">← Back to Archive</button>
+                <h2>Documents</h2>
+            </div>
+            <div id="documentsArchive" class="archive-content">
+                <p>No documents available yet.</p>
+            </div>
+        </section>
+
+        <!-- AI Assistant Section -->
+        <section id="ai-assistant" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="ai-title">AI Assistant</h2>
+            </div>
+
+            <div class="ai-assistant-content">
+                <div class="ai-chat-container">
+                    <div class="ai-welcome">
+                        <div class="ai-avatar">
+                            <svg width="80" height="80" viewBox="0 0 24 24" fill="#3498db">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V19C3 20.1 3.9 21 5 21H11V19H5V3H13V9H21ZM23 15V17C23 18.11 22.11 19 21 19H17V21L13 17L17 13V15H21C22.11 15 23 15.89 23 15ZM8 7H11V9H8V7ZM8 11H13V13H8V11ZM8 15H11V17H8V15Z"/>
+                            </svg>
+                        </div>
+                        <h3 data-translate="ai-welcome">HGV AI Assistant</h3>
+                        <p data-translate="ai-description">Ask me anything about HGV regulations, route planning, maintenance, or driving best practices. I'm here to help make your journey safer and more efficient!</p>
+                    </div>
+
+                    <div class="quick-questions">
+                        <h4 data-translate="quick-questions">Quick Questions:</h4>
+                        <div class="question-buttons">
+                            <button class="quick-btn" onclick="askQuickQuestion('What are the driving time regulations?')" data-translate="driving-time">Driving Time Rules</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('How do I plan an efficient route?')" data-translate="route-planning">Route Planning</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What should I check in a walkaround inspection?')" data-translate="walkaround-inspection">Walkaround Inspection</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('What are the UK weight limits?')" data-translate="weight-limits">Weight Limits</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('Tell me about rest break requirements')" data-translate="rest-breaks">Rest Breaks</button>
+                            <button class="quick-btn" onclick="askQuickQuestion('Explain tachograph rules')" data-translate="tacho-rules">Tacho Rules</button>
+                        </div>
+                    </div>
+
+                    <div id="chatMessages" class="chat-messages">
+                        <!-- Chat messages will appear here -->
+                    </div>
+
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" data-translate="ask-placeholder" placeholder="Ask me anything about HGV driving..." />
+                        <button class="send-btn" onclick="sendMessage()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Incident Report Section -->
+        <section id="incident-report" class="section tool-section">
+            <h2 data-translate="incident-title">Incident Report</h2>
+
+            <form id="incidentReportForm">
+                <!-- Driver & Vehicle Information -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="driver-vehicle-info">Driver & Vehicle Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="incident-driver-name" data-translate="driver-name">Driver Name:</label>
+                            <input type="text" id="incident-driver-name" name="driverName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="incident-vehicle-reg" data-translate="vehicle-reg">Vehicle Registration:</label>
+                            <input type="text" id="incident-vehicle-reg" name="vehicleReg" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="incident-date" data-translate="incident-date">Incident Date:</label>
+                            <input type="date" id="incident-date" name="incidentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="incident-time" data-translate="incident-time">Incident Time:</label>
+                            <input type="time" id="incident-time" name="incidentTime" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="location-info">Location Information</h3>
+
+                    <div class="form-group">
+                        <label for="incident-location" data-translate="incident-location">Incident Location:</label>
+                        <textarea id="incident-location" name="incidentLocation" rows="2" placeholder="Enter street address, city, postal code" required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="weather-conditions" data-translate="weather-conditions">Weather Conditions:</label>
+                            <select id="weather-conditions" name="weatherConditions" required>
+                                <option value="" data-translate="select-weather">Select weather...</option>
+                                <option value="clear" data-translate="weather-clear">Clear/Sunny</option>
+                                <option value="cloudy" data-translate="weather-cloudy">Cloudy</option>
+                                <option value="rain" data-translate="weather-rain">Rain</option>
+                                <option value="snow" data-translate="weather-snow">Snow</option>
+                                <option value="fog" data-translate="weather-fog">Fog</option>
+                                <option value="ice" data-translate="weather-ice">Ice</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="road-conditions" data-translate="road-conditions">Road Conditions:</label>
+                            <select id="road-conditions" name="roadConditions" required>
+                                <option value="" data-translate="select-road">Select road condition...</option>
+                                <option value="dry" data-translate="road-dry">Dry</option>
+                                <option value="wet" data-translate="road-wet">Wet</option>
+                                <option value="icy" data-translate="road-icy">Icy</option>
+                                <option value="construction" data-translate="road-construction">Construction Zone</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Incident Details -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="incident-details">Incident Details</h3>
+
+                    <div class="form-group">
+                        <label for="incident-type" data-translate="incident-type">Type of Incident:</label>
+                        <select id="incident-type" name="incidentType" required>
+                            <option value="" data-translate="select-incident">Select incident type...</option>
+<option value="collision" data-translate="incident-collision">Collision/Accident</option>
+                            <option value="breakdown" data-translate="incident-breakdown">Vehicle Breakdown</option>
+                            <option value="cargo" data-translate="incident-cargo">Cargo Damage/Loss</option>
+                            <option value="injury" data-translate="incident-injury">Personal Injury</option>
+                            <option value="property" data-translate="incident-property">Property Damage</option>
+                            <option value="near-miss" data-translate="incident-near-miss">Near Miss</option>
+                            <option value="other" data-translate="incident-other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="incident-severity" data-translate="incident-severity">Severity Level:</label>
+                        <select id="incident-severity" name="incidentSeverity" required>
+                            <option value="" data-translate="select-severity">Select severity...</option>
+                            <option value="low" data-translate="severity-low">Low</option>
+                            <option value="medium" data-translate="severity-medium">Medium</option>
+                            <option value="high" data-translate="severity-high">High</option>
+                            <option value="critical" data-translate="severity-critical">Critical</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="incident-description" data-translate="incident-description">Detailed Description:</label>
+                        <textarea id="incident-description" name="incidentDescription" rows="5" placeholder="Provide a detailed description of what happened..." required></textarea>
+                    </div>
+                </div>
+
+                <!-- Third Parties -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="third-parties">Third Parties Involved</h3>
+
+                    <div class="form-group">
+                        <label for="other-parties" data-translate="other-parties">Other Parties Involved:</label>
+                        <textarea id="other-parties" name="otherParties" rows="3" placeholder="Names, contact details, insurance information..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="witnesses" data-translate="witnesses">Witnesses:</label>
+                        <textarea id="witnesses" name="witnesses" rows="3" placeholder="Witness names and contact information..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Emergency Services -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="emergency-services">Emergency Services</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-translate="police-attended">Police Attended:</label>
+                            <label class="radio-label">
+                                <input type="radio" name="policeAttended" value="yes" required>
+                                <span data-translate="yes">Yes</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="policeAttended" value="no" required>
+                                <span data-translate="no">No</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="police-ref" data-translate="police-ref">Police Reference Number:</label>
+                            <input type="text" id="police-ref" name="policeRef">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-translate="ambulance-attended">Ambulance Called:</label>
+                            <label class="radio-label">
+                                <input type="radio" name="ambulanceAttended" value="yes">
+                                <span data-translate="yes">Yes</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="ambulanceAttended" value="no">
+                                <span data-translate="no">No</span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="fire-service-attended">Fire Service Called:</label>
+                            <label class="radio-label">
+                                <input type="radio" name="fireServiceAttended" value="yes">
+                                <span data-translate="yes">Yes</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="fireServiceAttended" value="no">
+                                <span data-translate="no">No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photos -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="photos-evidence">Photos & Evidence</h3>
+
+                    <div class="form-group">
+                        <label for="incident-photos" data-translate="incident-photos">Upload Photos:</label>
+                        <input type="file" id="incident-photos" name="incidentPhotos" multiple accept="image/*">
+                        <div id="photo-preview-container" class="photo-preview-container"></div>
+                    </div>
+                </div>
+
+                <!-- Actions Taken -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="actions-taken">Actions Taken</h3>
+
+                    <div class="form-group">
+                        <label for="immediate-actions" data-translate="immediate-actions">Immediate Actions Taken:</label>
+                        <textarea id="immediate-actions" name="immediateActions" rows="3" placeholder="What actions were taken immediately after the incident..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="follow-up-required" data-translate="follow-up-required">Follow-up Required:</label>
+                        <textarea id="follow-up-required" name="followUpRequired" rows="2" placeholder="Any follow-up actions needed..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Driver Declaration -->
+                <div class="form-section">
+                    <h3 class="section-header" data-translate="driver-declaration">Driver Declaration</h3>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="declaration-checkbox" required>
+                            <span data-translate="declaration-text">I declare that the information provided above is true and accurate to the best of my knowledge.</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="incident-signature" data-translate="driver-signature">Driver's Signature:</label>
+                        <canvas id="incidentSignatureCanvas" width="400" height="150" style="border: 2px solid #ccc; border-radius: 5px; background: white;"></canvas>
+                        <button type="button" onclick="clearIncidentSignature()" class="clear-btn" data-translate="clear-signature">Clear Signature</button>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" onclick="generateIncidentReport()" class="submit-btn" data-translate="generate-report">Generate Report</button>
+                    <button type="button" onclick="saveIncidentReport()" class="save-btn" data-translate="save-report">Save Report</button>
+                    <button type="button" onclick="clearIncidentForm()" class="clear-btn" data-translate="clear-form">Clear Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- GPS Tracking Section -->
+        <section id="gps-tracking" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="gps-title">GPS Tracking</h2>
+            </div>
+
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>🛰️ <span data-translate="driver-tracking">Driver Tracking Control</span></h3>
+                    <div class="tracking-status">
+                        <p id="trackingStatus"><span data-translate="status">Status</span>: <span data-translate="not-tracking">Not tracking</span></p>
+                        <p id="trackingId" style="display: none;"><span data-translate="tracking-id">Tracking ID</span>: <span></span></p>
+                        <p id="sharingTimeDisplay" style="display: none;"><strong>Auto-stop:</strong> <span id="sharingTimeText">Not set</span></p>
+                    </div>
+                    <div class="time-limit-section" id="timeLimitSection" style="display: none;">
+                        <div class="form-group">
+                            <label for="timeLimitDropdown">Auto-stop tracking after:</label>
+                            <select id="timeLimitDropdown">
+                                <option value="1">1 hour</option>
+                                <option value="2">2 hours</option>
+                                <option value="4">4 hours</option>
+                                <option value="6">6 hours</option>
+                                <option value="8">8 hours</option>
+                                <option value="12">12 hours</option>
+                                <option value="24">24 hours</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="applySharingTime()" class="primary-btn">Apply Time Limit</button>
+                            <button onclick="cancelSharingTime()" class="secondary-btn">Cancel</button>
+                        </div>
+                        <div id="countdownDisplay" style="display: none;">
+                            <p><strong>Tracking will stop in:</strong> <span id="countdownText">--:--:--</span></p>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button id="startTrackingBtn" onclick="startTracking()" data-translate="start-tracking">Start Tracking</button>
+                        <button id="setSharingTimeBtn" onclick="setSharingTime()" style="display: none;">Set Sharing Time</button>
+                        <button id="stopTrackingBtn" onclick="stopTracking()" style="display: none;" data-translate="stop-sharing">Stop Sharing</button>
+                        <button id="shareTrackingBtn" onclick="shareTrackingLink()" style="display: none;" data-translate="share-link">Share Link</button>
+                    </div>
+                    <div id="shareResult" class="result-display" style="display: none;"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>📍 <span data-translate="current-location">Current Location</span></h3>
+                    <div id="locationInfo" class="result-display">
+                        <p data-translate="click-start">Click "Start Tracking" to get your location</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geofencing Section -->
+            <div class="tool-card">
+                <h3>🛡️ Geofencing Controls</h3>
+
+                <!-- Geofencing Status -->
+                <div id="geofencingStatus" style="margin-bottom: 1rem; padding: 1rem; background: #0F2A35; border-radius: 8px; text-align: center;">
+                    <div style="color: #95a5a6;">⏹️ Geofencing Disabled</div>
+                </div>
+
+                <!-- Enable/Disable Geofencing -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #E0E6ED; font-size: 1.2rem;">
+                        <input type="checkbox" id="geofencingEnabled" style="transform: scale(1.3);">
+                        Enable Geofencing Alerts
+                    </label>
+                </div>
+
+                <!-- Create New Geofence -->
+                <div style="background: #0F2A35; border: 1px solid #2A4A57; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h4 style="margin-top: 0; color: #3498db;">Create New Geofence</h4>
+
+                    <div class="form-group">
+                        <label for="geofenceName">Zone Name:</label>
+                        <input type="text" id="geofenceName" placeholder="e.g., Customer Depot, Rest Area">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="geofenceType">Zone Type:</label>
+                            <select id="geofenceType">
+                                <option value="delivery">📦 Delivery Point</option>
+                                <option value="pickup">📋 Pickup Point</option>
+                                <option value="depot">🏢 Company Depot</option>
+                                <option value="customer">🏪 Customer Site</option>
+                                <option value="rest_area">🛌 Rest Area</option>
+                                <option value="restricted">⚠️ Restricted Zone</option>
+                                <option value="other">📍 Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="geofenceRadius">Radius (meters):</label>
+                            <input type="number" id="geofenceRadius" placeholder="100" min="10" max="5000" step="10">
+                        </div>
+                    </div>
+
+                    <button onclick="createGeofence()" class="primary-btn" style="width: 100%; margin-top: 1rem;">
+                        Create Geofence at Current Location
+                    </button>
+                    <p style="color: #B0B6BD; font-size: 0.9rem; margin-top: 0.5rem; text-align: center;">
+                        ⚠️ GPS tracking must be active to use current location
+                    </p>
+                </div>
+
+                <!-- Active Geofences List -->
+                <div style="background: #0F2A35; border: 1px solid #2A4A57; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h4 style="margin-top: 0; color: #3498db;">Active Geofences</h4>
+                    <div id="geofencesList">
+                        <p style="color: #B0B6BD;">No geofences created yet.</p>
+                    </div>
+                </div>
+
+                <!-- Recent Events Log -->
+                <div style="background: #0F2A35; border: 1px solid #2A4A57; border-radius: 8px; padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: #3498db;">Recent Events</h4>
+                        <button onclick="clearGeofenceEvents()" style="padding: 0.3rem 0.8rem; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">
+                            Clear Events
+                        </button>
+                    </div>
+                    <div id="geofenceEventLog">
+                        <p style="color: #B0B6BD;">No geofence events yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <h3>📍 <span data-translate="driver-location-map">Driver Location Map</span></h3>
+                <div id="driverMap" style="height: 400px; width: 100%; background: #2A4A57; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <p data-translate="click-start-map">Click "Start Tracking" to display map</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Document Wallet Section -->
+        <section id="document-wallet" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn" data-translate="back-btn">← Back</button>
+                <h2 data-translate="document-wallet-title">Document Wallet</h2>
+            </div>
+
+            <div class="document-wallet-container">
+                <!-- Top Action Bar with Upload and Smart Processing -->
+                <div class="top-action-bar">
+                    <div class="upload-icon-container" onclick="document.getElementById('documentFileInput').click()">
+                        <div class="upload-icon-btn">📁</div>
+                        <span>Upload</span>
+                        <input type="file" id="documentFileInput" style="display: none;" multiple accept=".pdf,.jpg,.jpeg,.png,.txt,.doc,.docx" onchange="handleFileUpload(event)">
+                    </div>
+
+                    <div class="smart-processing-compact">
+                        <label class="toggle-switch-compact">
+                            <span>🤖 Auto-detect</span>
+                            <input type="checkbox" id="autoDetectToggle" checked>
+                            <span class="toggle-slider-compact"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Document Statistics removed as unnecessary -->
+
+                <!-- Document Folders - Main Feature -->
+                <div class="document-folders-main">
+                    <h3>📂 Your Document Folders</h3>
+                    <div class="folders-grid-main">
+                        <div class="folder-card-main" onclick="openFolder('license')">
+                            <div class="folder-icon-main">📄</div>
+                            <div class="folder-info-main">
+                                <h4>License Documents</h4>
+                                <span class="folder-count">1 document</span>
+                                <div class="folder-preview">Valid HGV License</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('cpc')">
+                            <div class="folder-icon-main">🎓</div>
+                            <div class="folder-info-main">
+                                <h4>CPC Certificates</h4>
+                                <span class="folder-count">1 document</span>
+                                <div class="folder-preview">Professional Competence</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('doe')">
+                            <div class="folder-icon-main">🔧</div>
+                            <div class="folder-info-main">
+                                <h4>DOE Certificates</h4>
+                                <span class="folder-count">0 documents</span>
+                                <div class="folder-preview">No documents yet</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('invoice')">
+                            <div class="folder-icon-main">🧾</div>
+                            <div class="folder-info-main">
+                                <h4>Invoices</h4>
+                                <span class="folder-count">0 documents</span>
+                                <div class="folder-preview">No documents yet</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('insurance')">
+                            <div class="folder-icon-main">🛡️</div>
+                            <div class="folder-info-main">
+                                <h4>Insurance</h4>
+                                <span class="folder-count">0 documents</span>
+                                <div class="folder-preview">No documents yet</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('medical')">
+                            <div class="folder-icon-main">🏥</div>
+                            <div class="folder-info-main">
+                                <h4>Medical</h4>
+                                <span class="folder-count">0 documents</span>
+                                <div class="folder-preview">No documents yet</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('vehicle')">
+                            <div class="folder-icon-main">🚛</div>
+                            <div class="folder-info-main">
+                                <h4>Vehicle Documents</h4>
+                                <span class="folder-count">0 documents</span>
+                                <div class="folder-preview">No documents yet</div>
+                            </div>
+                        </div>
+                        <div class="folder-card-main" onclick="openFolder('other')">
+                            <div class="folder-icon-main">📋</div>
+                            <div class="folder-info-main">
+                                <h4>Other</h4>
+                                <span class="folder-count">0 documents</span>
+                                <div class="folder-preview">No documents yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="filterDocuments()">
+                        <span class="action-icon">🔍</span>
+                        <span>Search All</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showRecentDocuments()">
+                        <span class="action-icon">📅</span>
+                        <span>Recent</span>
+                    </button>
+                    <button class="quick-action-btn" onclick="showExpiringDocs()">
+                        <span class="action-icon">⚠️</span>
+                        <span>Expiring</span>
+                    </button>
+                </div>
+
+                <!-- Search and Filter Section (Collapsible) -->
+                <div class="search-filter-section" id="searchSection" style="display: none;">
+                    <div class="search-controls">
+                        <div class="search-bar">
+                            <input type="text" id="documentSearch" placeholder="Search documents..." onkeyup="filterDocuments()">
+                            <button class="search-btn" onclick="filterDocuments()">🔍</button>
+                        </div>
+                        <div class="filter-controls">
+                            <select id="categoryFilter" onchange="filterDocuments()">
+                                <option value="">All Categories</option>
+                                <option value="license">License Documents</option>
+                                <option value="cpc">CPC Certificates</option>
+                                <option value="doe">DOE Certificates</option>
+                                <option value="invoice">Invoices</option>
+                                <option value="insurance">Insurance</option>
+                                <option value="medical">Medical</option>
+                                <option value="vehicle">Vehicle Documents</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <select id="dateFilter" onchange="filterDocuments()">
+                                <option value="">All Dates</option>
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="year">This Year</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Tools Section -->
+        <section id="moretools" class="section tool-section">
+            <div class="tool-header">
+                <button onclick="showSection('home')" class="back-btn">← Back</button>
+                <h2>Get More Tools</h2>
+            </div>
+
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>⏰ Driver Hours Calculator</h3>
+                    <div class="form-group">
+                        <label for="startTime">Start Time:</label>
+                        <input type="time" id="startTime" name="startTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">End Time:</label>
+                        <input type="time" id="endTime" name="endTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="breakTime">Break Time (minutes):</label>
+                        <input type="number" id="breakTime" name="breakTime" min="0" value="45">
+                    </div>
+                    <button onclick="calculateHours()">CalculateHours</button>
+                    <div id="hoursResult" class="result-display"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>⛽ Fuel Log</h3>
+                    <div class="form-group">
+                        <label for="fuelAmount">Fuel Amount (Litres):</label>
+                        <input type="number" id="fuelAmount" name="fuelAmount" step="0.1" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="fuelCost">Cost per Litre (£):</label>
+                        <input type="number" id="fuelCost" name="fuelCost" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="mileage">Current Mileage:</label>
+                        <input type="number" id="mileage" name="mileage" min="0">
+                    </div>
+                    <button onclick="logFuel()">LogFuel</button>
+                    <div id="fuelResult" class="result-display"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>📊 Weekly Summary</h3>
+                    <button onclick="generateWeeklySummary()">GenerateSummary</button>
+                    <div id="weeklySummary" class="result-display"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>🌡️ Weather Check</h3>
+                    <div class="form-group">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" name="location" placeholder="Enter city or postcode">
+                    </div>
+                    <button onclick="checkWeather()">CheckWeather</button>
+                    <div id="weatherResult" class="result-display"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>📞 Emergency Contacts</h3>
+                    <div class="emergency-contacts">
+                        <p><strong>Breakdown:</strong> 0800 XXX XXXX</p>
+                        <p><strong>Police:</strong> 999</p>
+                        <p><strong>DVSA:</strong> 0300 123 9000</p>
+                        <p><strong>Company Dispatch:</strong> [Add your number]</p>
+                    </div>
+                    <button onclick="editContacts()">EditContacts</button>
+                </div>
+
+                <div class="tool-card">
+                    <h3>📝 Digital Logbook</h3>
+                    <div class="form-group">
+                        <label for="logEntry">Log Entry:</label>
+                        <textarea id="logEntry" name="logEntry" rows="3" placeholder="Enter your log entry..."></textarea>
+                    </div>
+                    <button onclick="saveLogEntry()">SaveEntry</button>
+                    <button onclick="viewLogbook()">ViewLogbook</button>
+                    <div id="logbookEntries" class="result-display"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="#home" class="bottom-nav-item" id="bottom-nav-home" onclick="showSection('home')">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span class="bottom-nav-label">Home</span>
+        </a>
+
+        <a href="#profile" class="bottom-nav-item" id="bottom-nav-profile" onclick="showSection('profile')">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <span class="bottom-nav-label">Profile</span>
+        </a>
+
+        <a href="#archive" class="bottom-nav-item" id="bottom-nav-archive" onclick="showSection('archive')">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z"/>
+            </svg>
+            <span class="bottom-nav-label">Archive</span>
+        </a>
+
+        <a href="#language" class="bottom-nav-item" id="bottom-nav-language" onclick="toggleLanguageMenuBottom()">
+            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+            </svg>
+            <span class="bottom-nav-label">Language</span>
+            <div class="language-menu-bottom" id="languageMenuBottom">
+                <div class="language-option" onclick="changeLanguage('en')">🇬🇧 English</div>
+                <div class="language-option" onclick="changeLanguage('pl')">🇵🇱 Polski</div>
+                <div class="language-option" onclick="changeLanguage('ro')">🇷🇴 Română</div>
+                <div class="language-option" onclick="changeLanguage('ru')">🇷🇺 Русский</div>
+                <div class="language-option" onclick="changeLanguage('lt')">🇱🇹 Lietuvių</div>
+            </div>
+        </a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
