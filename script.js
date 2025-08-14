@@ -1061,48 +1061,89 @@ function updateWeatherWidget() {
     }
 }
 
-function fetchWeatherData(lat, lon) {
-    // For demo purposes, generate realistic weather data based on location
-    // In production, you would call a real weather API like OpenWeatherMap
-    const weatherConditions = [
-        { condition: 'Sunny', temp: Math.round(Math.random() * 10 + 15), icon: '☀️' },
-        { condition: 'Partly Cloudy', temp: Math.round(Math.random() * 8 + 12), icon: '⛅' },
-        { condition: 'Cloudy', temp: Math.round(Math.random() * 6 + 10), icon: '☁️' },
-        { condition: 'Light Rain', temp: Math.round(Math.random() * 5 + 8), icon: '🌧️' },
-        { condition: 'Heavy Rain', temp: Math.round(Math.random() * 4 + 6), icon: '⛈️' }
-    ];
+async function fetchWeatherData(lat, lon) {
+    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m`;
 
-    const randomWeather = weatherConditions[Math.floor(Math.random() * weatherConditions.length)];
-    
-    // Get approximate location name from coordinates (simplified)
-    const locationName = getLocationName(lat, lon);
-    
-    updateWeatherDisplay(randomWeather.temp, randomWeather.condition, locationName, randomWeather.icon);
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (data.current) {
+            const weather = data.current;
+            const weatherInfo = getWeatherInfoFromCode(weather.weather_code);
+            const locationName = await getLocationName(lat, lon);
+
+            updateWeatherDisplay(
+                Math.round(weather.temperature_2m),
+                weatherInfo.condition,
+                locationName,
+                weatherInfo.icon
+            );
+        } else {
+            useDefaultWeatherData();
+        }
+    } catch (error) {
+        console.error("Could not fetch real weather data:", error);
+        useDefaultWeatherData();
+    }
 }
 
-function useDefaultWeatherData() {
-    const defaultWeather = {
-        temperature: Math.round(Math.random() * 15 + 5), // 5-20°C
-        condition: ['Sunny', 'Partly Cloudy', 'Cloudy', 'Light Rain'][Math.floor(Math.random() * 4)],
-        location: ['LONDON', 'MANCHESTER', 'BIRMINGHAM', 'LEEDS', 'GLASGOW'][Math.floor(Math.random() * 5)]
+function getWeatherInfoFromCode(code) {
+    const weatherCodes = {
+        0: { condition: 'Clear sky', icon: '☀️' },
+        1: { condition: 'Mainly clear', icon: '🌤️' },
+        2: { condition: 'Partly cloudy', icon: '⛅' },
+        3: { condition: 'Overcast', icon: '☁️' },
+        45: { condition: 'Fog', icon: '🌫️' },
+        48: { condition: 'Depositing rime fog', icon: '🌫️' },
+        51: { condition: 'Light drizzle', icon: '🌧️' },
+        53: { condition: 'Moderate drizzle', icon: '🌧️' },
+        55: { condition: 'Dense drizzle', icon: '🌧️' },
+        56: { condition: 'Light freezing drizzle', icon: '🌧️❄️' },
+        57: { condition: 'Dense freezing drizzle', icon: '🌧️❄️' },
+        61: { condition: 'Slight rain', icon: '🌧️' },
+        63: { condition: 'Moderate rain', icon: '🌧️' },
+        65: { condition: 'Heavy rain', icon: '⛈️' },
+        66: { condition: 'Light freezing rain', icon: '🌧️❄️' },
+        67: { condition: 'Heavy freezing rain', icon: '🌧️❄️' },
+        71: { condition: 'Slight snow fall', icon: '🌨️' },
+        73: { condition: 'Moderate snow fall', icon: '🌨️' },
+        75: { condition: 'Heavy snow fall', icon: '❄️' },
+        77: { condition: 'Snow grains', icon: '🌨️' },
+        80: { condition: 'Slight rain showers', icon: '🌧️' },
+        81: { condition: 'Moderate rain showers', icon: '🌧️' },
+        82: { condition: 'Violent rain showers', icon: '⛈️' },
+        85: { condition: 'Slight snow showers', icon: '🌨️' },
+        86: { condition: 'Heavy snow showers', icon: '❄️' },
+        95: { condition: 'Thunderstorm', icon: '⚡' },
+        96: { condition: 'Thunderstorm with slight hail', icon: '⛈️' },
+        99: { condition: 'Thunderstorm with heavy hail', icon: '⛈️' },
     };
+    return weatherCodes[code] || { condition: 'Unknown', icon: '❓' };
+}
 
-    const iconMap = {
-        'Sunny': '☀️',
-        'Partly Cloudy': '⛅',
-        'Cloudy': '☁️',
-        'Light Rain': '🌧️'
+
+function useDefaultWeatherData() {
+    console.log("Using default weather data as a fallback.");
+    const defaultWeather = {
+        temperature: 15,
+        condition: 'Unavailable',
+        location: 'Service Down',
+        icon: '⚠️'
     };
 
     updateWeatherDisplay(
-        defaultWeather.temperature, 
-        defaultWeather.condition, 
-        defaultWeather.location, 
-        iconMap[defaultWeather.condition]
+        defaultWeather.temperature,
+        defaultWeather.condition,
+        defaultWeather.location,
+        defaultWeather.icon
     );
 }
 
-function updateWeatherDisplay(temperature, condition, location, icon) {
+async function updateWeatherDisplay(temperature, condition, location, icon) {
     const weatherIcon = document.querySelector('.weather-icon-mini');
     const weatherTemp = document.querySelector('.weather-temp-mini');
     const weatherLocation = document.querySelector('.weather-location-mini');
@@ -5019,11 +5060,11 @@ function generatePDFInLanguage(language) {
 
     pdf.setFontSize(10);
     const vehicleInfo = [
-        `${texts.vehicleReg}: ${(formData.get('vehicleReg') || '').replace(/[Ø=Þ›]/g, '').trim()}`,
-        `${texts.odo}: ${(formData.get('odo') || '').replace(/[Ø=Þ›]/g, '').trim()}`,
-        `${texts.trailerNo}: ${(formData.get('trailerno') || '').replace(/[Ø=Þ›]/g, '').trim()}`,
-        `${texts.driverName}: ${(formData.get('driverName') || '').replace(/[Ø=Þ›]/g, '').trim()}`,
-        `${texts.date}: ${(formData.get('checkDate') || '').replace(/[Ø=Þ›]/g, '').trim()}    ${texts.time}: ${(formData.get('checkTime') || '').replace(/[Ø=Þ›]/g, '').trim()}`
+        `${texts.vehicleReg}: ${(formData.get('vehicleReg') || '').trim()}`,
+        `${texts.odo}: ${(formData.get('odo') || '').trim()}`,
+        `${texts.trailerNo}: ${(formData.get('trailerno') || '').trim()}`,
+        `${texts.driverName}: ${(formData.get('driverName') || '').trim()}`,
+        `${texts.date}: ${(formData.get('checkDate') || '').trim()}    ${texts.time}: ${(formData.get('checkTime') || '').trim()}`
     ];
     vehicleInfo.forEach((line, index) => {
         pdf.text(line, margin + 5, yPosition + (index * 6) + 2);
@@ -5055,8 +5096,7 @@ function generatePDFInLanguage(language) {
     pdf.setTextColor(40, 58, 91);
     const checklistRows = document.querySelectorAll('.checklist-table tbody tr');
     checklistRows.forEach((row, index) => {
-        const checklistItem = row.querySelector('td:first-child').textContent
-            .replace(/[Ø=Þ›]/g, '') // Remove unwanted characters
+        const checklistItem = (row.querySelector('td:first-child').textContent || '')
             .replace(/[^\x20-\x7E\u00A0-\u00FF]/g, '') // Remove non-printable characters
             .trim();
         const buttons = row.querySelectorAll('.status-button');
@@ -5121,7 +5161,6 @@ pdf.setTextColor(40, 58, 91);
 
     pdf.setFontSize(10);
     const defects = (formData.get('defects') || 'None reported')
-        .replace(/[Ø=Þ›]/g, '') // Remove unwanted characters
         .replace(/[^\x20-\x7E\u00A0-\u00FF]/g, '') // Remove non-printable characters
         .trim();
     const defectLines = pdf.splitTextToSize(defects, pageWidth - 2 * margin - 10);
