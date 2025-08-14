@@ -4184,9 +4184,23 @@ function refreshDateTime() {
 }
 
 // Global functions that might be called from HTML
+function toggleToolsMenu() {
+    const overlay = document.getElementById('tools-menu-overlay');
+    if (overlay) {
+        overlay.classList.toggle('show');
+    }
+}
+
+function showSectionAndHideMenu(sectionId) {
+    showSection(sectionId);
+    toggleToolsMenu();
+}
+
 window.showSection = showSection;
 window.refreshDateTime = refreshDateTime;
 window.toggleLanguageMenu = toggleLanguageMenu;
+window.toggleToolsMenu = toggleToolsMenu;
+window.showSectionAndHideMenu = showSectionAndHideMenu;
 window.changeLanguage = changeLanguage;
 window.clearSignature = clearSignature;
 window.clearDeliverySignature = clearDeliverySignature;
